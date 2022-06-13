@@ -16,14 +16,27 @@ class Opinion:
         self.opinion_id = opinion_id
         return self
     
-    def __str__(self):
-        pass
+   def __str__(self):
+        return f"{self.author}, {self.recommendation}, {self.stars}, {self.content}, {self.useful}, {self.useless}, {self.publish_date}, {self.purchase_date}, {self.pros}, {self.cons}, {self.opinion_id}"
 
-    def __repr__(self):
-        pass
-
+    def __repr__(self): #kopia obiektu
+        return f"{self.author}, {self.recommendation}, {self.stars}, {self.content}, {self.useful}, {self.useless}, {self.publish_date}, {self.purchase_date}, {self.pros}, {self.cons}, {self.opinion_id}"
+    
     def to_dict(self):
-        pass
+        opinion_data ={
+            "author" : self.author,
+            "recommendation" : self.recommendation,
+            "stars" : self.stars, 
+            "content" : self.content,
+            "useful" : self.useful,
+            "useless" : self.useless,
+            "publish_date" : self.publish_date,
+            "purchase_date" : self.purchase_date,
+            "pros" : self.pros,
+            "cons" : self.cons,
+            "opinion_id" : self.opinion_id
+        }
+        return opinion_data
 
     def extract_opinion(self, opinion):
         for key, value in selectors.items():
