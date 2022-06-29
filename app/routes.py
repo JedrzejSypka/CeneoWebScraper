@@ -12,8 +12,10 @@ def extract():
     if request.method == "POST":
         product_id = request.form.get("product_id")
         product = Product(product_id)
+        product.extract_product()
+        product.extract_product().process_stats()
         product.extract_product().process_stats().draw_charts()
-        # product.save_stats()
+        product.save_stats()
         product.save_opinions()
         return redirect(url_for("product", product_id=product_id))
     else:

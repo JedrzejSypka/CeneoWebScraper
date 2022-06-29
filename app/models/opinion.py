@@ -22,7 +22,7 @@ class Opinion:
         return f"Opinion(opinion_id={self.opinion_id}, " + ", ".join(f"{key}={str(getattr(self, key))}" for key in selectors.keys()) + ")"
 
     def to_dict(self):
-        return {"opinion_id": self.opinion_id} | {key: getattr(self, key) for key in selectors.keys()}
+        return dict(list({"opinion_id": self.opinion_id}.items()) + list({key: getattr(self, key) for key in selectors.keys()}.items()))
 
     def extract_opinion(self, opinion):
         for key, value in selectors.items():

@@ -10,13 +10,13 @@ from matplotlib import pyplot as plt
 
 class Product:
     def __init__(self, product_id=0, opinions=[], product_name="", opinions_count=0, pros_count=0, cons_count=0, average_score=0):
-        self.product_id = product_id
+        self.product_id = int(product_id)
         self.product_name = product_name
         self.opinions = opinions
         self.opinions_count = opinions_count
-        self.pros_count = pros_count
-        self.cons_count = cons_count
-        self.average_score = average_score
+        self.pros_count = int(pros_count)
+        self.cons_count = int(cons_count)
+        self.average_score = float(average_score)
     
     def __str__(self):
         return f"""product_id: {self.product_id}<br>
@@ -33,23 +33,23 @@ class Product:
 
     def to_dict(self):
         return {
-            "product_id": self.product_id,
+            "product_id": int(self.product_id),
             "product_name": self.product_name,
             "opinions_count": self.opinions_count,
-            "pros_count": self.pros_count,
-            "cons_count": self.cons_count,
-            "average_score": self.average_score,
+            "pros_count": int(self.pros_count),
+            "cons_count": int(self.cons_count),
+            "average_score": float(self.average_score),
             "opinions": [opinion.to_dict() for opinion in self.opinions]
         }
 
     def stats_to_dict(self):
         return {
-            "product_id": self.product_id,
+             "product_id": int(self.product_id),
             "product_name": self.product_name,
             "opinions_count": self.opinions_count,
-            "pros_count": self.pros_count,
-            "cons_count": self.cons_count,
-            "average_score": self.average_score
+            "pros_count": int(self.pros_count),
+            "cons_count": int(self.cons_count),
+            "average_score": float(self.average_score),
         }
     
     def opinions_to_dict(self):
@@ -57,11 +57,11 @@ class Product:
 
     def extract_product(self):
         url = f"https://www.ceneo.pl/{self.product_id}#tab=reviews"
-        response = requests.get(url)
+        response = requests.get(url, allow_redirects=False)
         page = BeautifulSoup(response.text, 'html.parser')
         self.product_name = get_item(page, "h1.product-top__product-info__name")
         while(url):
-            response = requests.get(url)
+            response = requests.get(url, allow_redirects=False)
             page = BeautifulSoup(response.text, 'html.parser')
             opinions = page.select("div.js_product-review")
             for opinion in opinions:
@@ -74,6 +74,7 @@ class Product:
     
     def opinions_do_df(self):
         opinions = pd.read_json(json.dumps([opinion.to_dict() for opinion in self.opinions]))
+        print(opinions.columns)
         opinions.stars = opinions.stars.map(lambda x: float(x.split("/")[0].replace(",", ".")))
         return opinions
     
@@ -85,6 +86,7 @@ class Product:
         return self
 
     def draw_charts(self): 
+        plt.switch_backend('Agg')
         recommendation = self.opinions_do_df().recommendation.value_counts(dropna = False).sort_index().reindex(["Nie polecam", "Polecam", None])
         recommendation.plot.pie(
             label="", 
